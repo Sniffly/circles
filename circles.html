@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+      var circles;
+      var numCircles=0;
+      function onLoad(){
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.addEventListener("click",fullscreen);
+        drawCircles();
+      }
+      $(window).resize(function() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+      function fullscreen(){
+          var canvas = document.getElementById('canvas');
+          if(canvas.webkitRequestFullScreen) canvas.webkitRequestFullScreen();
+          else canvas.mozRequestFullScreen();
+      }
+      function circle(){
+        this.x=Math.floor(Math.random()*(window.innerWidth+1));
+        this.y=Math.floor(Math.random()*(window.innerHeight+1));
+        this.inc=1;
+        this.rad=Math.floor(window.innerWidth*.05);
+        getX=function()return this.x;
+        getY=function()return this.y;
+        getInc=function()return this.inc;
+        getRad=function()return this.rad;
+      }
+      function isColliding(ind,x,y,rad){
+        for(int j=0; j<=numCircles();j++){
+          if(j!=ind){
+            distance=Math.sqrt(Math.pow(x-circles[j].getX,2)+Math.pow(y-circles[j].getY,2));
+            if(distance<=circles[j].getRad+rad) return true;else return false;
+          }
+        }
+      }
+      function drawCircles(){
+        circles[numCircles]=new circle();
+      }
+      function updateCircles(){
+        for(int i=0; i<numCircles();i++){
+
+        }
+      }
+      function modeChange(ind){
+        circles[ind].getInc==1?
+      }
+    </script>
+  </head>
+  <body onload="onLoad()">
+    <canvas id="canvas" width="100%" style="position:absolute">Use a browser with HTML5 canvas support</canvas>
+  </body>
+</html>
