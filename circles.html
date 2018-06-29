@@ -1,34 +1,18 @@
 <!--
-circles
+Circles!
+by Ian Sniffen
 
-circles need to:
-    expand until contact, then shrink. delete once at a certain 
-    expand
-    collide
-    shrink
+This code is super sloppy, maybe I'll eventually fix it
 
-
-
-
-
-
-
-
-
-
+Click for fullscreen
 -->
-
-
-
-
-
 <html>
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
       var circles = [];
       var numCircles=0;
-      var color = 'blue';
+      var color = 0;
       function onLoad(){
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
@@ -40,6 +24,8 @@ circles need to:
       $(window).resize(function() {
         canvas.width  = window.innerWidth;
         canvas.height = window.innerHeight;
+        circles=[];
+        numCircles=0;
       });
       function fullscreen(){
           var canvas = document.getElementById('canvas');
@@ -51,36 +37,24 @@ circles need to:
         this.y=Math.floor(Math.random()*(window.innerHeight+1));
         this.active=true;
         this.inc=true;
-        this.rad=Math.floor(window.innerWidth*.015);
-        console.log(this.x+","+this.y+","+this.rad);
-        setX=function(inp){
-            this.x=inp;
-        }
-        setY=function(inp){
-            this.y=inp;
-        }
-        dec=function(){
-            this.inc=false;
-        }
-        setRad=function(inp){
-            this.rad=inp;
-        }
-        del=function(){
-            this.active=false;
-        }
-        return;
+        this.color="hsl("+color+","+Math.floor(Math.random() * 51) + 50+"%,"+Math.floor(Math.random() * 51) + 50+"%)";
+        this.rad=Math.max(Math.floor(window.innerWidth*.01),Math.floor(window.innerHeight*.01));
+        
       }
-      function isColliding(ind,x,y,rad){
+      function isColliding(ind){
         for(var j=0; j<=numCircles; j++){
           if(j!=ind&&circles[j].active){
-            distance=Math.sqrt(Math.pow(x-circles[j].getX,2)+Math.pow(y-circles[j].getY,2));
-            if(distance<=circles[j].getRad+rad) return true;else return false;
+            distance=Math.sqrt(Math.pow(circles[ind].x-circles[j].x,2)+Math.pow(circles[ind].y-circles[j].y,2));
+            if(distance<=circles[j].rad+circles[ind].rad){
+              return true;
+            }
           }
         }
+        return false;
       }
       function createCircles(){
         circles[numCircles]=new circle();
-        if(!isColliding(numCircles,circles[numCircles].x,circles[numCircles].y,circles[numCircles].rad))
+        if(!isColliding(numCircles))
           numCircles++;
         else circles[numCircles].active=false;
       }
@@ -92,17 +66,14 @@ circles need to:
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         for(var i=0; i<numCircles;i++){
-          console.log(circles[i].active);
-          if(circles[i].active==true){
+          if(circles[i].active){
               ctx.beginPath();
               var x=circles[i].x;
               var y=circles[i].y;
               var rad=circles[i].rad;
-              console.log(x+","+y+","+rad);
               ctx.arc(x,y,rad,0,2*Math.PI);
-              ctx.fillStyle="black";
+              ctx.fillStyle=circles[i].color;
               ctx.fill();
-              console.log("drawn?");
           }
         }
       }
@@ -114,19 +85,22 @@ circles need to:
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0,0,canvas.width,canvas.height);
         createCircles();
+        //updateCircles();
         drawCanvas();
-        await sleep(16);
-        console.log("step!");
+        await sleep(1600);
         step();//recursion FOREVER!
       }
       function updateCircles(){
         for(var i=0; i<numCircles;i++){
-
-        }
-      }
-      function modeChange(ind){
-        if(circles[ind].getInc){
-            circles[ind].setInc(0);
+          if(circles[i].inc){
+            circles[i].rad+=Math.max(Math.floor(window.innerWidth*.005),Math.floor(window.innerHeight*.005));
+            if(isColliding(i)) circles[i].inc=false;
+          }else{
+            circles[i].rad-=Math.max(Math.floor(window.innerWidth*.005),Math.floor(window.innerHeight*.005));
+            if(circles[i].rad<=Math.max(Math.floor(window.innerWidth*.01),Math.floor(window.innerHeight*.01))){
+              
+            }
+          }  
         }
       }
     </script>
