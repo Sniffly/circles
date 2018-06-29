@@ -79,6 +79,10 @@ Click for fullscreen
               ctx.fillStyle=circles[i].color;
               ctx.fill();
               circles[i].hue+=.5;
+              circles[i].light-=.1;
+              circles[i].satur-=.25;
+              if(circles[i].light<=20&&circles[i].satur<=20||circles[i].light<=0)
+                circles[i].active=false;
               circles[i].color='hsl('+circles[i].hue+','+circles[i].satur+'%,'+circles[i].light+'%)';
           }
         }
@@ -90,13 +94,12 @@ Click for fullscreen
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = "#333";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         createCircles();
         //updateCircles();
         drawCanvas();
-        if(color<360)
-          color+=1;
-        else
-          color=0;
+        color+=1;
         await sleep(8.3);
         step();//recursion FOREVER!
       }
