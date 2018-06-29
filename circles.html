@@ -1,8 +1,32 @@
+<!--
+circles
+
+circles need to:
+	expand until contact, then shrink. delete once at a certain 
+	expand
+	collide
+	shrink
+
+
+
+
+
+
+
+
+
+
+-->
+
+
+
+
+
 <html>
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
-      var circles;
+      var circles = [];
       var numCircles=0;
       function onLoad(){
         var canvas = document.getElementById("canvas");
@@ -24,15 +48,42 @@
       function circle(){
         this.x=Math.floor(Math.random()*(window.innerWidth+1));
         this.y=Math.floor(Math.random()*(window.innerHeight+1));
-        this.inc=1;
+		this.active=true;
+        this.inc=true;
         this.rad=Math.floor(window.innerWidth*.05);
-        getX=function()return this.x;
-        getY=function()return this.y;
-        getInc=function()return this.inc;
-        getRad=function()return this.rad;
+        getX=function(){
+			return this.x;
+		}
+        getY=function(){
+			return this.y;
+		}
+		getActive=function(){
+			return this.active;
+		}
+		getInc=function(){
+			return this.inc;
+		}
+		getRad=function(){
+			return this.rad;
+		}
+		setX=function(inp){
+			this.x=inp;
+		}
+		setY=function(inp){
+			this.y=inp;
+		}
+		dec=function(){
+			this.inc=false;
+		}
+		setRad=function(inp){
+			this.rad=inp;
+		}
+		del=function(){
+			this.active=false;
+		}
       }
       function isColliding(ind,x,y,rad){
-        for(int j=0; j<=numCircles();j++){
+        for(var j=0; j<=numCircles; j++){
           if(j!=ind){
             distance=Math.sqrt(Math.pow(x-circles[j].getX,2)+Math.pow(y-circles[j].getY,2));
             if(distance<=circles[j].getRad+rad) return true;else return false;
@@ -42,13 +93,20 @@
       function drawCircles(){
         circles[numCircles]=new circle();
       }
+	  function drawCanvas(){
+		for(var i=0; i<numCircles;i++){
+			if(circles[i].get
+		}
+	  }
       function updateCircles(){
-        for(int i=0; i<numCircles();i++){
+        for(var i=0; i<numCircles;i++){
 
         }
       }
       function modeChange(ind){
-        circles[ind].getInc==1?
+        if(circles[ind].getInc==1){
+			circles[ind].setInc(0);
+		}
       }
     </script>
   </head>
