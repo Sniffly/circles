@@ -2,10 +2,10 @@
 circles
 
 circles need to:
-	expand until contact, then shrink. delete once at a certain 
-	expand
-	collide
-	shrink
+    expand until contact, then shrink. delete once at a certain 
+    expand
+    collide
+    shrink
 
 
 
@@ -28,13 +28,14 @@ circles need to:
     <script>
       var circles = [];
       var numCircles=0;
+      var color = 'blue';
       function onLoad(){
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         canvas.width  = window.innerWidth;
         canvas.height = window.innerHeight;
         canvas.addEventListener("click",fullscreen);
-        drawCircles();
+        step();
       }
       $(window).resize(function() {
         canvas.width  = window.innerWidth;
@@ -48,69 +49,89 @@ circles need to:
       function circle(){
         this.x=Math.floor(Math.random()*(window.innerWidth+1));
         this.y=Math.floor(Math.random()*(window.innerHeight+1));
-		this.active=true;
+        this.active=true;
         this.inc=true;
-        this.rad=Math.floor(window.innerWidth*.05);
-        getX=function(){
-			return this.x;
-		}
-        getY=function(){
-			return this.y;
-		}
-		getActive=function(){
-			return this.active;
-		}
-		getInc=function(){
-			return this.inc;
-		}
-		getRad=function(){
-			return this.rad;
-		}
-		setX=function(inp){
-			this.x=inp;
-		}
-		setY=function(inp){
-			this.y=inp;
-		}
-		dec=function(){
-			this.inc=false;
-		}
-		setRad=function(inp){
-			this.rad=inp;
-		}
-		del=function(){
-			this.active=false;
-		}
+        this.rad=Math.floor(window.innerWidth*.015);
+        console.log(this.x+","+this.y+","+this.rad);
+        setX=function(inp){
+            this.x=inp;
+        }
+        setY=function(inp){
+            this.y=inp;
+        }
+        dec=function(){
+            this.inc=false;
+        }
+        setRad=function(inp){
+            this.rad=inp;
+        }
+        del=function(){
+            this.active=false;
+        }
+        return;
       }
       function isColliding(ind,x,y,rad){
         for(var j=0; j<=numCircles; j++){
-          if(j!=ind){
+          if(j!=ind&&circles[j].active){
             distance=Math.sqrt(Math.pow(x-circles[j].getX,2)+Math.pow(y-circles[j].getY,2));
             if(distance<=circles[j].getRad+rad) return true;else return false;
           }
         }
       }
-      function drawCircles(){
+      function createCircles(){
         circles[numCircles]=new circle();
+        if(!isColliding(numCircles,circles[numCircles].x,circles[numCircles].y,circles[numCircles].rad))
+          numCircles++;
+        else circles[numCircles].active=false;
       }
-	  function drawCanvas(){
-		for(var i=0; i<numCircles;i++){
-			if(circles[i].get
-		}
-	  }
+      function drawCircle(x,y,rad){
+        ctx.beginPath();
+        
+      }
+      function drawCanvas(){
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        for(var i=0; i<numCircles;i++){
+          console.log(circles[i].active);
+          if(circles[i].active==true){
+              ctx.beginPath();
+              var x=circles[i].x;
+              var y=circles[i].y;
+              var rad=circles[i].rad;
+              console.log(x+","+y+","+rad);
+              ctx.arc(x,y,rad,0,2*Math.PI);
+              ctx.fillStyle="black";
+              ctx.fill();
+              console.log("drawn?");
+          }
+        }
+      }
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+      async function step(){
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        createCircles();
+        drawCanvas();
+        await sleep(16);
+        console.log("step!");
+        step();//recursion FOREVER!
+      }
       function updateCircles(){
         for(var i=0; i<numCircles;i++){
 
         }
       }
       function modeChange(ind){
-        if(circles[ind].getInc==1){
-			circles[ind].setInc(0);
-		}
+        if(circles[ind].getInc){
+            circles[ind].setInc(0);
+        }
       }
     </script>
   </head>
   <body onload="onLoad()">
-    <canvas id="canvas" width="100%" style="position:absolute">Use a browser with HTML5 canvas support</canvas>
+    <canvas id="canvas" width="100%" style="position:absolute">Use a browser with HTML5 canvas support to view this.</canvas>
   </body>
 </html>
