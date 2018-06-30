@@ -79,9 +79,9 @@ Click for fullscreen
               ctx.fillStyle=circles[i].color;
               ctx.fill();
               circles[i].hue+=.5;
-              circles[i].light-=.1;
-              circles[i].satur-=.25;
-              if(circles[i].light<=20&&circles[i].satur<=20||circles[i].light<=0)
+              circles[i].light-=.125;
+              circles[i].satur-=.125;
+              if(circles[i].light<=20&&circles[i].satur<=20||circles[i].light<=10||circles[i].satur<=10)
                 circles[i].active=false;
               circles[i].color='hsl('+circles[i].hue+','+circles[i].satur+'%,'+circles[i].light+'%)';
           }
