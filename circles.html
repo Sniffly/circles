@@ -37,7 +37,9 @@ Click for fullscreen
         this.y=Math.floor(Math.random()*(window.innerHeight+1));
         this.active=true;
         this.inc=true;
-        this.hue=color;
+		if(numCircles%2==0)
+			this.hue=color;
+		else this.hue=color+180;
         this.satur=Math.floor(Math.random() * 51) + 50;
         this.light=satur=Math.floor(Math.random() * 41) + 30;
 		this.opac=1;
