@@ -40,7 +40,8 @@ Click for fullscreen
         this.hue=color;
         this.satur=Math.floor(Math.random() * 51) + 50;
         this.light=satur=Math.floor(Math.random() * 41) + 30;
-        this.color='hsl('+this.hue+','+this.satur+'%,'+this.light+'%)';
+		this.opac=1;
+        this.color='hsla('+this.hue+','+this.satur+'%,'+this.light+'%,'+this.opac+')';
         //this.color="hsl("+color+","+satur+"%,100%)";
         this.rad=Math.max(Math.floor(window.innerWidth*.01),Math.floor(window.innerHeight*.01));
         
@@ -81,9 +82,10 @@ Click for fullscreen
               circles[i].hue+=.5;
               circles[i].light-=.125;
               circles[i].satur-=.125;
-              if(circles[i].light<=20&&circles[i].satur<=20||circles[i].light<=10||circles[i].satur<=10)
+			  circles[i].opac-=.0075;
+              if(circles[i].opac<=.05)
                 circles[i].active=false;
-              circles[i].color='hsl('+circles[i].hue+','+circles[i].satur+'%,'+circles[i].light+'%)';
+              circles[i].color='hsla('+circles[i].hue+','+circles[i].satur+'%,'+circles[i].light+'%,'+circles[i].opac+')';
           }
         }
       }
