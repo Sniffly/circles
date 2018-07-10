@@ -43,7 +43,6 @@ Click for fullscreen
         this.light=satur=Math.floor(Math.random() * 41) + 30;
         this.opac=1;
         this.color='hsla('+this.hue+','+this.satur+'%,'+this.light+'%,'+this.opac+')';
-        //this.color="hsl("+color+","+satur+"%,100%)";
         this.rad=Math.max(Math.floor(window.innerWidth*.01),Math.floor(window.innerHeight*.01));
       }
       function isColliding(ind){
@@ -63,18 +62,23 @@ Click for fullscreen
           numCircles++;
         else circles[numCircles].active=false;
       }
-      function drawCircle(x,y,rad){
-        ctx.beginPath();
-      }
       function returnColor(){
         switch(mode){
-          case 0:
+          case 0://default
             return(color);
             break;
-          case 1:
+          case 1://complementary
             return (numCircles%2==0 ? color : color+180);
             break;
-          case 2:
+          case 2://split-complementary
+            if(numCircles%3==0)
+              return color;
+            else if(numCircles%3==1)
+              return color+150;
+            else
+              return color+210;
+              break;
+          case 3://triadic
             if(numCircles%3==0)
               return color;
             else if(numCircles%3==1)
@@ -82,16 +86,34 @@ Click for fullscreen
             else
               return color+240;
               break;
-            case 3:
-              if(numCircles%4==0)
-                return color;
-              else if(numCircles%4==1)
-                return color+90;
-              else if(numCircles%4==2)
-                return color+180;
-              else
-                return color+270;
-                break;
+          case 4://tetradic
+            if(numCircles%4==0)
+              return color;
+            else if(numCircles%4==1)
+              return color+40;
+            else if(numCircles%4==2)
+              return color+120;
+            else
+              return color+240;
+              break;
+          case 5://square
+            if(numCircles%4==0)
+              return color;
+            else if(numCircles%4==1)
+              return color+90;
+            else if(numCircles%4==2)
+              return color+180;
+            else
+              return color+270;
+              break;
+          case 6://analagous
+            if(numCircles%3==0)
+              return color;
+            else if(numCircles%3==1)
+              return color+30;
+            else
+              return color+330;
+              break;
         }
       }
       function drawCanvas(){
@@ -117,7 +139,7 @@ Click for fullscreen
         }
       }
       function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise(resolve => setTimeout(resolve, ms));//wait
       }
       async function step(){
         var canvas = document.getElementById("canvas");
@@ -126,16 +148,15 @@ Click for fullscreen
         ctx.fillStyle = "#333";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         createCircles();
-        //updateCircles();
         drawCanvas();
         color+=1;
-        color=color%360;
+        color=color%360;//not necessary, but whatever
         ctx.font="12px Arial";
         ctx.fillStyle = "white";
         ctx.fillText("Use left and right arrow keys to switch color modes.",12,25);
         ctx.fillText("Current mode: "+modeText(),12,40);
-        await sleep(8.3);
-        step();//recursion FOREVER!
+        await sleep(8.3);//sleep for 8.3 ms
+        step();//infinite recursion
       }
       function modeText(){
         switch(mode){
@@ -146,33 +167,30 @@ Click for fullscreen
             return("Complementary");
             break;
           case 2:
-            return("Triadic");
+            return("Split-Complementary");
             break;
           case 3:
+            return("Triadic");
+            break;
+          case 4:
             return("Tetradic");
             break;
-        }
-      }
-      function updateCircles(){
-        for(var i=0; i<numCircles;i++){
-          if(circles[i].inc){
-            circles[i].rad+=Math.max(Math.floor(window.innerWidth*.005),Math.floor(window.innerHeight*.005));
-            if(isColliding(i)) circles[i].inc=false;
-          }else{
-            circles[i].rad-=Math.max(Math.floor(window.innerWidth*.005),Math.floor(window.innerHeight*.005));
-            if(circles[i].rad<=Math.max(Math.floor(window.innerWidth*.01),Math.floor(window.innerHeight*.01))){
-            }
-          }  
+          case 5:
+            return("Square");
+            break;
+          case 6:
+            return("Analagous");
+            break;
         }
       }
       document.onkeydown = function(e) {
-        if(e.keyCode==37)
+        if(e.keyCode==37)//key left
           mode--;
-        else if(e.keyCode==39)
+        else if(e.keyCode==39)//key right
           mode++;
         if(mode==-1)
-          mode=3;
-        mode=mode%4;
+          mode=6;
+        mode=mode%7;
       };
     </script>
   </head>
