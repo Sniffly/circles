@@ -13,6 +13,7 @@ Click for fullscreen
       var circles = [];
       var numCircles=0;
       var color = 0;
+      var mode = 0;
       function onLoad(){
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
@@ -28,25 +29,22 @@ Click for fullscreen
         numCircles=0;
       });
       function fullscreen(){
-          var canvas = document.getElementById('canvas');
-          if(canvas.webkitRequestFullScreen) canvas.webkitRequestFullScreen();
-          else canvas.mozRequestFullScreen();
+        var canvas = document.getElementById('canvas');
+        if(canvas.webkitRequestFullScreen) canvas.webkitRequestFullScreen();
+        else canvas.mozRequestFullScreen();
       }
       function circle(){
         this.x=Math.floor(Math.random()*(window.innerWidth+1));
         this.y=Math.floor(Math.random()*(window.innerHeight+1));
         this.active=true;
         this.inc=true;
-		if(numCircles%2==0)
-			this.hue=color;
-		else this.hue=color+180;
+        this.hue=returnColor();
         this.satur=Math.floor(Math.random() * 51) + 50;
         this.light=satur=Math.floor(Math.random() * 41) + 30;
-		this.opac=1;
+        this.opac=1;
         this.color='hsla('+this.hue+','+this.satur+'%,'+this.light+'%,'+this.opac+')';
         //this.color="hsl("+color+","+satur+"%,100%)";
         this.rad=Math.max(Math.floor(window.innerWidth*.01),Math.floor(window.innerHeight*.01));
-        
       }
       function isColliding(ind){
         for(var j=0; j<=numCircles; j++){
@@ -67,27 +65,54 @@ Click for fullscreen
       }
       function drawCircle(x,y,rad){
         ctx.beginPath();
-        
+      }
+      function returnColor(){
+        switch(mode){
+          case 0:
+            return(color);
+            break;
+          case 1:
+            return (numCircles%2==0 ? color : color+180);
+            break;
+          case 2:
+            if(numCircles%3==0)
+              return color;
+            else if(numCircles%3==1)
+              return color+120;
+            else
+              return color+240;
+              break;
+            case 3:
+              if(numCircles%4==0)
+                return color;
+              else if(numCircles%4==1)
+                return color+90;
+              else if(numCircles%4==2)
+                return color+180;
+              else
+                return color+270;
+                break;
+        }
       }
       function drawCanvas(){
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         for(var i=0; i<numCircles;i++){
           if(circles[i].active){
-              ctx.beginPath();
-              var x=circles[i].x;
-              var y=circles[i].y;
-              var rad=circles[i].rad;
-              ctx.arc(x,y,rad,0,2*Math.PI);
-              ctx.fillStyle=circles[i].color;
-              ctx.fill();
-              circles[i].hue+=.5;
-              circles[i].light-=.125;
-              circles[i].satur-=.125;
-			  circles[i].opac-=.0075;
-              if(circles[i].opac<=.025)
-                circles[i].active=false;
-              circles[i].color='hsla('+circles[i].hue+','+circles[i].satur+'%,'+circles[i].light+'%,'+circles[i].opac+')';
+            ctx.beginPath();
+            var x=circles[i].x;
+            var y=circles[i].y;
+            var rad=circles[i].rad;
+            ctx.arc(x,y,rad,0,2*Math.PI);
+            ctx.fillStyle=circles[i].color;
+            ctx.fill();
+            circles[i].hue+=.5;
+            circles[i].light-=.125;
+            circles[i].satur-=.125;
+            circles[i].opac-=.0075;
+            if(circles[i].opac<=.025)
+              circles[i].active=false;
+            circles[i].color='hsla('+circles[i].hue+','+circles[i].satur+'%,'+circles[i].light+'%,'+circles[i].opac+')';
           }
         }
       }
@@ -104,8 +129,29 @@ Click for fullscreen
         //updateCircles();
         drawCanvas();
         color+=1;
+        color=color%360;
+        ctx.font="12px Arial";
+        ctx.fillStyle = "white";
+        ctx.fillText("Use left and right arrow keys to switch color modes.",12,25);
+        ctx.fillText("Current mode: "+modeText(),12,40);
         await sleep(8.3);
         step();//recursion FOREVER!
+      }
+      function modeText(){
+        switch(mode){
+          case 0:
+            return("Default");
+              break;
+          case 1:
+            return("Complementary");
+            break;
+          case 2:
+            return("Triadic");
+            break;
+          case 3:
+            return("Tetradic");
+            break;
+        }
       }
       function updateCircles(){
         for(var i=0; i<numCircles;i++){
@@ -115,11 +161,19 @@ Click for fullscreen
           }else{
             circles[i].rad-=Math.max(Math.floor(window.innerWidth*.005),Math.floor(window.innerHeight*.005));
             if(circles[i].rad<=Math.max(Math.floor(window.innerWidth*.01),Math.floor(window.innerHeight*.01))){
-              
             }
           }  
         }
       }
+      document.onkeydown = function(e) {
+        if(e.keyCode==37)
+          mode--;
+        else if(e.keyCode==39)
+          mode++;
+        if(mode==-1)
+          mode=3;
+        mode=mode%4;
+      };
     </script>
   </head>
   <body onload="onLoad()">
