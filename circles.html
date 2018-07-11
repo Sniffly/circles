@@ -14,6 +14,8 @@ Click for fullscreen
       var numCircles=0;
       var color = 0;
       var mode = 0;
+      var sizeFactor = 0.01;
+      var colModeCt = 8
       var xDown = null;                                                        
       var yDown = null; 
       function onLoad(){
@@ -47,7 +49,7 @@ Click for fullscreen
         this.light=satur=Math.floor(Math.random() * 41) + 30;
         this.opac=1;
         this.color='hsla('+this.hue+','+this.satur+'%,'+this.light+'%,'+this.opac+')';
-        this.rad=Math.max(Math.floor(window.innerWidth*.01),Math.floor(window.innerHeight*.01));
+        this.rad=Math.max(Math.floor(window.innerWidth*sizeFactor),Math.floor(window.innerHeight*sizeFactor));
       }
       function isColliding(ind){
         for(var j=0; j<=numCircles; j++){
@@ -118,6 +120,9 @@ Click for fullscreen
             else
               return color+330;
               break;
+          case 7://random
+            return Math.floor(Math.random()*(361))
+            break;
         }
       }
       function drawCanvas(){
@@ -166,7 +171,7 @@ Click for fullscreen
         switch(mode){
           case 0:
             return("Default");
-              break;
+            break;
           case 1:
             return("Complementary");
             break;
@@ -185,6 +190,9 @@ Click for fullscreen
           case 6:
             return("Analagous");
             break;
+          case 7:
+            return("Random");
+            break;
         }
       }
       document.onkeydown = function(e) {
@@ -192,9 +200,8 @@ Click for fullscreen
           mode--;
         else if(e.keyCode==39)//key right
           mode++;
-        if(mode==-1)
-          mode=6;
-        mode=mode%7;
+        if(mode==-1) mode=colModeCt-1;
+        mode=mode%colModeCt;
       };
       function handleTouchStart(evt) {                                         
         xDown = evt.touches[0].clientX;                                      
@@ -217,8 +224,8 @@ Click for fullscreen
             } else {
                 mode--;
             }
-            if(mode==-1) mode=6;
-            mode=mode%7;
+            if(mode==-1) mode=colModeCt-1;
+            mode=mode%colModeCt;
         }
         /* reset values */
         xDown = null;
